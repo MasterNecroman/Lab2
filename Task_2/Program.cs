@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Task_2
 {
@@ -6,56 +6,18 @@ namespace Task_2
     {
         static void Main(string[] args)
         {
-            Converter converter = new Converter(36.96,38.95 , 8.43 );
+            Converter converter = new Converter(36.96, 33.2, 8.43);
+            MainLoop(converter);
+            Console.WriteLine("Exiting the program.");
+        }
 
+        static void MainLoop(Converter converter)
+        {
             while (true)
             {
-                Console.WriteLine("Enter the amount:");
-                string amountStr = Console.ReadLine();
-
-                if (string.IsNullOrEmpty(amountStr) || !double.TryParse(amountStr, out double amount))
-                {
-                    Console.WriteLine("Invalid amount. Please try again.");
-                    continue;   
-                }
-
-                string sourceCurrencyStr;
-                Currency sourceCurrency;
-
-                do
-                {
-                    Console.WriteLine("Enter the currency to convert (USD, EUR, PLN):");
-                    sourceCurrencyStr = Console.ReadLine();
-
-                    if (!IsValidCurrency(sourceCurrencyStr))
-                    {
-                        Console.WriteLine("Invalid source currency. Please try again.");
-                    }
-                    else
-                    {
-                        sourceCurrency = (Currency)Enum.Parse(typeof(Currency), sourceCurrencyStr);
-                        break;
-                    }
-                } while (true);
-
-                string targetCurrencyStr;
-                Currency targetCurrency;
-
-                do
-                {
-                    Console.WriteLine("Enter the target currency (USD, EUR, PLN):");
-                    targetCurrencyStr = Console.ReadLine();
-
-                    if (!IsValidCurrency(targetCurrencyStr))
-                    {
-                        Console.WriteLine("Invalid target currency. Please try again.");
-                    }
-                    else
-                    {
-                        targetCurrency = (Currency)Enum.Parse(typeof(Currency), targetCurrencyStr);
-                        break;
-                    }
-                } while (true);
+                double amount = GetAmount();
+                Currency sourceCurrency = GetCurrency("Enter the currency to convert (USD, EUR, PLN):");
+                Currency targetCurrency = GetCurrency("Enter the target currency (USD, EUR, PLN):");
 
                 double result = converter.Convert(amount, sourceCurrency, targetCurrency);
                 Console.WriteLine($"Conversion result: {result} {targetCurrency}");
@@ -65,16 +27,53 @@ namespace Task_2
 
                 if (continueStr != "yes")
                 {
-                    Console.WriteLine("Exiting the program.");
-                    return; 
+                    break;
                 }
             }
         }
 
-        static bool IsValidCurrency(string currency)
+        static double GetAmount()
         {
-            string[] validCurrencies = { "USD", "EUR", "PLN" };
-            return Array.Exists(validCurrencies, c => c.Equals(currency, StringComparison.OrdinalIgnoreCase));
+            double amount;
+
+            while (true)
+            {
+                Console.WriteLine("Enter the amount:");
+                string amountStr = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(amountStr) || !double.TryParse(amountStr, out amount))
+                {
+                    Console.WriteLine("Invalid amount. Please try again.");
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return amount;
+        }
+
+        static Currency GetCurrency(string message)
+        {
+            Currency currency;
+
+            while (true)
+            {
+                Console.WriteLine(message);
+                string currencyStr = Console.ReadLine();
+
+                if (Enum.TryParse(currencyStr, out currency) && Enum.IsDefined(typeof(Currency), currency))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid currency. Please try again.");
+                }
+            }
+
+            return currency;
         }
     }
 }
