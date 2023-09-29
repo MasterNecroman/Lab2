@@ -6,7 +6,7 @@ namespace Task_2
     {
         static void Main(string[] args)
         {
-            Converter converter = new Converter(36.96, 33.2, 8.43);
+            Converter converter = new Converter(36.96, 33.2, 7.5);
             MainLoop(converter);
             Console.WriteLine("Exiting the program.");
         }
